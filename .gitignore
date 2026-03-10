@@ -22,3 +22,22 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Gradle cache
+.gradle/
+
+# Build output
+build/
+
+# Local Gradle config
+gradle-app.setting
+
+# Gradle wrapper logs
+gradle-app.setting
+
+# IntelliJ / Android Studio (если используешь)
+.idea/
+*.iml
+
+# OS files
+.DS_Store
