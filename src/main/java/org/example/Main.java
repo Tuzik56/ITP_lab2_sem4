@@ -1,11 +1,12 @@
 package org.example;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Scanner;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.example.StringProcessor;
 
 
 public class Main {
@@ -19,8 +20,8 @@ public class Main {
         logger.info("Введите строку: ");
         String inputLine = scanner.nextLine();
 
-        String reversed = StringUtils.reverse(inputLine);
-        String capitalized = StringUtils.capitalize(inputLine);
+        String reversed = StringProcessor.reverse(inputLine);
+        String capitalized = StringProcessor.capitalize(inputLine);
 
         logger.info("Перевернутая строка: {}", reversed);
         logger.info("Строка с заглавной буквы: {}", capitalized);
