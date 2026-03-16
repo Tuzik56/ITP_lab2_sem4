@@ -14,7 +14,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Введите строку: ");
+        logger.info("Введите строку: ");
         String input = scanner.nextLine();
 
         String reversed = StringUtils.reverse(input);
