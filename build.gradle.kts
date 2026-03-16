@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     id("java")
     application
@@ -52,4 +55,40 @@ abstract class PrintInfoTask : DefaultTask() {
 tasks.register<PrintInfoTask>("printInfo") {
     group = "Custom"
     description = "Выводит информацию о проекте"
+}
+
+tasks.register("generateBuildPassport") {
+
+    val outputDir = file("$projectDir/src/main/resources")
+    val outputFile = file("$outputDir/build-passport.properties")
+
+    doLast {
+
+        val username = System.getenv("USERNAME")
+            ?: System.getenv("USER")
+            ?: "unknown"
+
+        val os = System.getProperty("os.name")
+        val javaVersion = System.getProperty("java.version")
+
+        val date = LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        val content = """
+            user=$username
+            os=$os
+            javaVersion=$javaVersion
+            buildTime=$date
+            message=Hello from Gradle build!
+        """.trimIndent()
+
+        outputDir.mkdirs()
+        outputFile.writeText(content)
+
+        println("Файл build-passport.properties создан")
+    }
+}
+
+tasks.named("processResources") {
+    dependsOn("generateBuildPassport")
 }
