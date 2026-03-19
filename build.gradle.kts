@@ -22,8 +22,8 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("org.slf4j:slf4j-api:2.0.17")
-    implementation("ch.qos.logback:logback-classic:1.5.31")
+
+    implementation(project(":app"))
     implementation(project(":string-utils"))
 }
 
@@ -63,7 +63,7 @@ tasks.register<PrintInfoTask>("printInfo") {
 
 tasks.register("generateBuildPassport") {
 
-    val outputDir = file("$projectDir/src/main/resources")
+    val outputDir = file("$projectDir/app/src/main/resources")
     val outputFile = file("$outputDir/build-passport.properties")
 
     doLast {
