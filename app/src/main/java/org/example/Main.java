@@ -38,6 +38,8 @@ public class Main {
                 logger.info("Java: {}", props.getProperty("javaVersion"));
                 logger.info("Время сборки: {}", props.getProperty("buildTime"));
                 logger.info("Сообщение: {}", props.getProperty("message"));
+                logger.info("Git commit: {}", props.getProperty("gitCommit"));
+                logger.info("Номер сборки: {}", props.getProperty("buildNumber"));
             }
 
         } catch (Exception e) {

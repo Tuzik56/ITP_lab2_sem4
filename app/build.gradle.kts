@@ -1,5 +1,6 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 plugins {
     application
@@ -21,12 +22,15 @@ dependencies {
     implementation(project(":string-utils"))
 }
 
-tasks.register("generateBuildPassport") {
+abstract class GenerateBuildInfoTask : DefaultTask() {
 
-    val outputDir = file("$projectDir/src/main/resources")
-    val outputFile = file("$outputDir/build-passport.properties")
+    @Input
+    val gitCommitHash: Property<String> = project.objects.property(String::class.java)
 
-    doLast {
+    @TaskAction
+    fun generate() {
+
+        val outputFile = project.file("src/main/resources/build-passport.properties")
 
         val username = System.getenv("USERNAME")
             ?: System.getenv("USER")
@@ -38,23 +42,46 @@ tasks.register("generateBuildPassport") {
         val date = LocalDateTime.now()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
+        var buildNumber = 1
+
+        // читаем старый buildNumber (если файл уже есть)
+        if (outputFile.exists()) {
+            val props = Properties()
+            props.load(outputFile.inputStream())
+            buildNumber = (props.getProperty("buildNumber")?.toIntOrNull() ?: 0) + 1
+        }
+
         val content = """
             user=$username
             os=$os
             javaVersion=$javaVersion
             buildTime=$date
+            gitCommit=${gitCommitHash.get()}
+            buildNumber=$buildNumber
             message=Hello from Gradle build!
         """.trimIndent()
 
-        outputDir.mkdirs()
+        outputFile.parentFile.mkdirs()
         outputFile.writeText(content)
 
-        println("Файл build-passport.properties создан")
+        println("build-passport.properties обновлён (buildNumber=$buildNumber)")
     }
 }
 
+tasks.register<GenerateBuildInfoTask>("generateBuildInfo") {
+
+    group = "Custom"
+    description = "Генерирует build-passport.properties"
+
+    gitCommitHash.set(
+        providers.exec {
+            commandLine("git", "rev-parse", "--short", "HEAD")
+        }.standardOutput.asText.map { it.trim() }
+    )
+}
+
 tasks.named("processResources") {
-    dependsOn("generateBuildPassport")
+    dependsOn("generateBuildInfo")
 }
 
 tasks.shadowJar {
