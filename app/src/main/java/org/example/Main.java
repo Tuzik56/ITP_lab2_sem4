@@ -6,8 +6,6 @@ import java.util.Scanner;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.example.StringProcessor;
-
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
